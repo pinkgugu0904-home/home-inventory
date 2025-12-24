@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Home Inventory｜新增物品</title>
+
+  <!-- 不讓搜尋引擎收錄 -->
+  <meta name="robots" content="noindex, nofollow" />
+
+  <style>
+    :root { --gap: 14px; }
+    body{
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", Arial, sans-serif;
+      margin: 0; background:#f6f7fb; color:#111;
+    }
+    .wrap{
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 18px 14px 40px;
+    }
+    .card{
+      background:#fff;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.06);
+      padding: 16px;
+    }
+    h1{ font-size: 20px; margin: 6px 0 4px; }
+    .sub{ font-size: 13px; color:#555; margin: 0 0 14px; line-height: 1.5; }
+
+    /* 手機優先：一欄；桌機變兩欄 */
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: var(--gap);
+    }
+    @media (min-width: 720px){
+      .grid{ grid-template-columns: 1fr 1fr; }
+      .span-2{ grid-column: span 2; }
+    }
+
+    label{ display:block; font-weight: 700; font-size: 13px; margin: 2px 0 6px; }
+    input, select, textarea{
+      width: 100%;
+      box-sizing: border-box;
+      padding: 11px 12px;
+      border: 1px solid #d9dce6;
+      border-radius: 12px;
+      font-size: 15px;
+      background: #fff;
+      outline: none;
+    }
+    input:focus, select:focus, textarea:focus{ border-color:#7a90ff; }
+    textarea{ min-height: 92px; resize: vertical; }
+
+    .row{
+      display:flex; gap: 10px; align-items:center; justify-content: space-between;
+      margin-top: 16px;
+    }
+    button{
+      width: 100%;
+      padding: 12px 14px;
+      border: 0;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .btn{
+      background:#111; color:#fff;
+    }
+    .btn:disabled{ opacity: .55; cursor:not-allowed; }
+    .ghost{
+      background:#fff; border:1px solid #d9dce6; color:#111;
+      font-weight:700;
+    }
+    .hint{ font-size: 12px; color:#666; margin-top: 6px; line-height:1.45; }
+    .toast{
+      margin-top: 10px;
+      font-size: 13px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      display:none;
+    }
+    .ok{ background:#ecfff1; border:1px solid #bfe9c8; color:#0c5a1a; }
+    .err{ background:#fff1f1; border:1px solid #f1b8b8; color:#7a0b0b; }
+
+    /* 小小加分：表單必填星號 */
+    .req::after{ content:" *"; color:#d40000; }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>家庭物品新增（Home Inventory）</h1>
+      <p class="sub">
+        快速記錄家裡物品與收納位置，避免下次翻箱倒櫃。<br>
+        目前版本：先記錄文字資料（照片上傳下一步再加）。
+      </p>
+
+      <form id="inventoryForm">
+        <div class="grid">
+
+          <div class="span-2">
+            <label class="req">物品名稱</label>
+            <input name="item_name" placeholder="例如：聖誕樹、備用電池、Kitty 收納盒" required />
+          </div>
+
+          <div>
+            <label>購買日期</label>
+            <!-- 送到 Apps Script 的欄位名要跟你後端一致：purchase_date -->
+            <input name="purchase_date" type="date" />
+            <div class="hint">不確定也沒關係，可留空。</div>
+          </div>
+
+          <div>
+            <label>價格</label>
+            <input name="price" type="number" inputmode="numeric" placeholder="例如：399" />
+          </div>
+
+          <div>
+            <label>產品分類（自由）</label>
+            <input name="category" placeholder="例如：節慶用品 / 文具 / 清潔用品" />
+          </div>
+
+          <div>
+            <label>分類第一層</label>
+            <input name="category_level_1" placeholder="例如：生活用品" />
+          </div>
+
+          <div>
+            <label>分類第二層</label>
+            <input name="category_level_2" placeholder="例如：清潔用品" />
+          </div>
+
+          <div>
+            <label>取得來源</label>
+            <input name="source" placeholder="例如：全聯 / 網購 / 親友贈送 / 公司發的" />
+          </div>
+
+          <div>
+            <label>存放位置</label>
+            <input name="storage_location" placeholder="例如：A1（主臥衣櫃上層）/ B3（客廳櫃第三格）" />
+          </div>
+
+          <div class="span-2">
+            <label>目前狀態</label>
+            <!-- 這裡的 value 建議用英文代碼（穩），顯示用中文 -->
+            <select name="status">
+              <option value="in_use">在用</option>
+              <option value="almost_used_up">快用完</option>
+              <option value="used_up">已用完／已吃完</option>
+				<option value="discarded">已送人</option>
+              <option value="discarded">已丟棄</option>
+            </select>
+          </div>
+
+          <div class="span-2">
+            <label>備註</label>
+            <textarea name="notes" placeholder="例如：含裝飾/備用零件/放在透明收納箱"></textarea>
+          </div>
+
+        </div>
+
+        <div class="row">
+          <button class="ghost" type="reset">清空</button>
+          <button id="submitBtn" class="btn" type="submit">送出儲存</button>
+        </div>
+
+        <div id="toast" class="toast"></div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyQPndHLrTld-wY6oTYV7O6aiS66UpMxBx7ix6b74yRya21GU2eRFJHdkOvf8RB48a8DQ/exec";
+
+    const form = document.getElementById("inventoryForm");
+    const btn  = document.getElementById("submitBtn");
+    const toast = document.getElementById("toast");
+
+    function showToast(type, msg){
+      toast.className = "toast " + (type === "ok" ? "ok" : "err");
+      toast.textContent = msg;
+      toast.style.display = "block";
+      setTimeout(()=> toast.style.display = "none", 3500);
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      btn.disabled = true;
+      btn.textContent = "送出中…";
+
+      try {
+        const fd = new FormData(form);
+
+        // 你的 Apps Script 目前寫入欄位：purchase_date/category/category_level_1/category_level_2/source/price/storage_location/status/notes
+        // recorded_at 由後端自動補，所以前端不用送
+        // ※ item_name 目前若你的後端尚未寫入，之後我會幫你加上去（或你先把 item_name 加到後端 row）
+
+        const res = await fetch(SCRIPT_URL, { method: "POST", body: fd });
+        const text = await res.text();
+
+        // 盡量解析 JSON（如果後端回 JSON）
+        let ok = true;
+        try {
+          const data = JSON.parse(text);
+          ok = !!data.ok;
+        } catch(_) {}
+
+        if (!res.ok || !ok) {
+          showToast("err", "送出失敗：請確認 Apps Script 權限/工作表名稱是否正確。");
+        } else {
+          showToast("ok", "已儲存 ✅");
+          form.reset();
+        }
+      } catch (err) {
+        showToast("err", "送出失敗：" + (err?.message || String(err)));
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "送出儲存";
+      }
+    });
+  </script>
+</body>
+</html>
