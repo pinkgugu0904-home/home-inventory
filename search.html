@@ -5,68 +5,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>家庭物品查詢（Home Inventory）</title>
   <meta name="robots" content="noindex, nofollow" />
-
   <style>
-    body{
-      font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans TC",Arial,sans-serif;
-      margin:0;background:#f6f7fb;color:#111
-    }
+    body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans TC",Arial,sans-serif;margin:0;background:#f6f7fb;color:#111}
     .wrap{max-width:1100px;margin:0 auto;padding:16px 14px 40px}
     .card{background:#fff;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.06);padding:14px}
     h1{font-size:20px;margin:6px 0 10px}
-
     .bar{display:grid;grid-template-columns:1fr;gap:10px}
-    @media(min-width:720px){
-      .bar{grid-template-columns:1.4fr .9fr .8fr .8fr .5fr}
-    }
-
-    input,select,button{
-      width:100%;box-sizing:border-box;padding:11px 12px;
-      border:1px solid #d9dce6;border-radius:12px;font-size:15px
-    }
+    @media(min-width:720px){.bar{grid-template-columns:1.4fr .9fr .8fr .8fr .5fr}}
+    input,select,button{width:100%;box-sizing:border-box;padding:11px 12px;border:1px solid #d9dce6;border-radius:12px;font-size:15px;background:#fff}
     button{border:0;background:#111;color:#fff;font-weight:800;cursor:pointer}
     button:disabled{opacity:.6}
-
     .hint{font-size:12px;color:#666;margin-top:8px;line-height:1.5}
-
     .grid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:14px}
     @media(min-width:720px){.grid{grid-template-columns:1fr 1fr}}
-
-    .item{
-      background:#fff;border-radius:16px;
-      box-shadow:0 8px 24px rgba(0,0,0,.06);
-      padding:12px;display:flex;gap:10px
-    }
-    .thumb{
-      width:90px;height:90px;min-width:90px;
-      border-radius:12px;background:#eee;
-      display:flex;align-items:center;justify-content:center;
-      overflow:hidden
-    }
+    .item{background:#fff;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.06);padding:12px;display:flex;gap:10px}
+    .thumb{width:90px;height:90px;min-width:90px;border-radius:12px;background:#eee;display:flex;align-items:center;justify-content:center;overflow:hidden}
     .thumb img{width:100%;height:100%;object-fit:cover}
-
     .meta{flex:1;min-width:0}
     .title{font-weight:900;font-size:16px;margin-bottom:6px}
     .kv{font-size:13px;line-height:1.5;color:#333}
-
-    .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-    .tag{
-      font-size:12px;background:#f1f3ff;
-      border:1px solid #d7dcff;color:#2b3a9a;
-      padding:4px 8px;border-radius:999px
-    }
-
+    .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center}
+    .tag{font-size:12px;background:#f1f3ff;border:1px solid #d7dcff;color:#2b3a9a;padding:4px 8px;border-radius:999px}
     .row2{display:flex;gap:8px;margin-top:10px}
     .row2 select{flex:1}
     .row2 button{flex:.9}
-
-    .toast{
-      margin-top:12px;padding:10px 12px;border-radius:12px;
-      font-size:13px;display:none
-    }
+    .toast{margin-top:12px;padding:10px 12px;border-radius:12px;font-size:13px;display:none}
     .ok{background:#ecfff1;border:1px solid #bfe9c8;color:#0c5a1a}
     .err{background:#fff1f1;border:1px solid #f1b8b8;color:#7a0b0b}
-
     .small{font-size:12px;color:#666}
     a{color:#111}
   </style>
@@ -74,15 +39,12 @@
 
 <body>
 <div class="wrap">
-
   <div class="card">
     <h1>家庭物品查詢（Home Inventory）</h1>
 
     <div class="bar">
       <input id="q" placeholder="搜尋：名稱 / 備註 / 來源…" />
-      <select id="cat">
-        <option value="">全部分類</option>
-      </select>
+      <select id="cat"><option value="">全部分類</option></select>
       <select id="status">
         <option value="">全部狀態</option>
         <option value="in_use">在用</option>
@@ -106,11 +68,8 @@
 </div>
 
 <script>
-/* ================== 設定 ================== */
-const SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbx6h6mH0qgGJ0OdTThjXb1M4cUPatDmg7BCVThntP7o2XX0-wEeuumrkOM8F1PHWLja4Q/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyfmsTiiTO1Y3HURr0ECRBtRui0P2elFlJ-ntGoJJGV8ma50jm1E2ZmIlOyDz-0jWqN/exec";
 
-/* ================== DOM ================== */
 const elQ = document.getElementById("q");
 const elCat = document.getElementById("cat");
 const elStatus = document.getElementById("status");
@@ -119,51 +78,47 @@ const btn = document.getElementById("btn");
 const list = document.getElementById("list");
 const toast = document.getElementById("toast");
 
-/* ================== 工具 ================== */
 function showToast(type, msg){
   toast.className = "toast " + (type === "ok" ? "ok" : "err");
   toast.textContent = msg;
   toast.style.display = "block";
   setTimeout(()=>toast.style.display="none",3500);
 }
-
 function esc(s){
   return String(s ?? "").replace(/[&<>"']/g,m=>({
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
   }[m]));
 }
-
 function firstPhotoLink(photoLinks){
   if(!photoLinks) return "";
   return String(photoLinks).split("\n").map(s=>s.trim()).filter(Boolean)[0] || "";
 }
-
-/* ⭐ 關鍵：Drive 圖片轉成可顯示網址 */
-function driveImgSrc(url){
-  if(!url) return "";
-  const s = String(url);
-  const m = s.match(/\/d\/([^/]+)/) || s.match(/[?&]id=([^&]+)/);
-  if(!m) return s;
-  return `https://drive.google.com/uc?export=view&id=${m[1]}`;
+// ✅ 統一把 purchase_date 顯示成 yyyy-mm-dd（不受 UTC 影響）
+function showDateOnly(s){
+  const t = String(s || "").trim();
+  if (!t) return "";
+  // 如果本來就是 2024-09-10，就直接回傳前 10 碼
+  if (/^\d{4}-\d{2}-\d{2}/.test(t)) return t.slice(0,10);
+  // 如果是 ISO 時間（含 Z），就用台灣時區格式化
+  const d = new Date(t);
+  if (isNaN(d)) return t;
+  return d.toLocaleDateString("zh-TW", { year:"numeric", month:"2-digit", day:"2-digit", timeZone:"Asia/Taipei" })
+    .replace(/\//g, "-");
 }
 
-/* ================== 載入分類 ================== */
 async function loadMeta(){
   try{
     const res = await fetch(`${SCRIPT_URL}?action=meta`);
     const data = await res.json();
     if(!data.ok) throw new Error(data.error);
-
     const cats = data.meta?.categories || [];
-    elCat.innerHTML =
-      `<option value="">全部分類</option>` +
+    elCat.innerHTML = `<option value="">全部分類</option>` +
       cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("");
   }catch(e){
     console.warn("meta load failed", e);
   }
 }
 
-/* ================== 查詢 ================== */
 async function fetchList(){
   btn.disabled = true;
   btn.textContent = "查詢中…";
@@ -193,7 +148,6 @@ async function fetchList(){
   }
 }
 
-/* ================== 顯示結果 ================== */
 function renderItems(items){
   if(!items.length){
     list.innerHTML = `<div class="card"><b>沒有資料</b></div>`;
@@ -201,16 +155,19 @@ function renderItems(items){
   }
 
   list.innerHTML = items.map(it=>{
-    const img = firstPhotoLink(it.photoLinks);
+    const imgLink = firstPhotoLink(it.photoLinks);
+    const thumb = (it.thumbUrl || "").trim(); // ✅ 後端回傳的縮圖網址
+
     return `
       <div class="item" data-row="${it.row}">
         <div class="thumb">
-          ${img ? `<img src="${esc(driveImgSrc(img))}">` : `<span class="small">無照片</span>`}
+          ${thumb ? `<img src="${esc(thumb)}" alt="photo">` : `<span class="small">無照片</span>`}
         </div>
+
         <div class="meta">
           <div class="title">${esc(it.item_name || "(未命名)")}</div>
           <div class="kv">
-            ${it.purchase_date ? `購買：${esc(it.purchase_date)}<br>`:""}
+            ${it.purchase_date ? `購買：${esc(showDateOnly(it.purchase_date))}<br>`:""}
             ${it.source ? `來源：${esc(it.source)}<br>`:""}
             ${it.notes ? `備註：${esc(it.notes)}`:""}
           </div>
@@ -219,7 +176,7 @@ function renderItems(items){
             ${it.storage_location ? `<span class="tag">位置：${esc(it.storage_location)}</span>`:""}
             ${it.category ? `<span class="tag">分類：${esc(it.category)}</span>`:""}
             ${it.status ? `<span class="tag">狀態：${esc(it.status)}</span>`:""}
-            ${img ? `<a class="small" href="${esc(driveImgSrc(img))}" target="_blank">開啟照片</a>`:""}
+            ${imgLink ? `<a class="small" href="${esc(imgLink)}" target="_blank" rel="noopener">開啟原圖</a>`:""}
           </div>
 
           <div class="row2">
@@ -245,11 +202,7 @@ function renderItems(items){
       btnSave.disabled = true;
       btnSave.textContent = "更新中…";
       try{
-        const p = new URLSearchParams({
-          action:"updateStatus",
-          row:row,
-          status:sel.value
-        });
+        const p = new URLSearchParams({ action:"updateStatus", row:row, status:sel.value });
         const r = await fetch(`${SCRIPT_URL}?${p.toString()}`);
         const d = await r.json();
         if(!d.ok) throw new Error(d.error);
@@ -264,7 +217,6 @@ function renderItems(items){
   });
 }
 
-/* ================== 初始化 ================== */
 btn.onclick = fetchList;
 elQ.addEventListener("keydown",e=>{ if(e.key==="Enter") fetchList(); });
 
