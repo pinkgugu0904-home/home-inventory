@@ -3,233 +3,275 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Home Inventory｜查詢</title>
+  <title>家庭物品查詢（Home Inventory）</title>
   <meta name="robots" content="noindex, nofollow" />
+
   <style>
-    body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans TC",Arial,sans-serif;margin:0;background:#f6f7fb;color:#111}
-    .wrap{max-width:980px;margin:0 auto;padding:16px 14px 40px}
+    body{
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans TC",Arial,sans-serif;
+      margin:0;background:#f6f7fb;color:#111
+    }
+    .wrap{max-width:1100px;margin:0 auto;padding:16px 14px 40px}
     .card{background:#fff;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.06);padding:14px}
     h1{font-size:20px;margin:6px 0 10px}
+
     .bar{display:grid;grid-template-columns:1fr;gap:10px}
-    @media(min-width:720px){.bar{grid-template-columns: 1.2fr .9fr .8fr .8fr .5fr}}
-    input,select,button{width:100%;box-sizing:border-box;padding:11px 12px;border:1px solid #d9dce6;border-radius:12px;font-size:15px;background:#fff}
+    @media(min-width:720px){
+      .bar{grid-template-columns:1.4fr .9fr .8fr .8fr .5fr}
+    }
+
+    input,select,button{
+      width:100%;box-sizing:border-box;padding:11px 12px;
+      border:1px solid #d9dce6;border-radius:12px;font-size:15px
+    }
     button{border:0;background:#111;color:#fff;font-weight:800;cursor:pointer}
-    button:disabled{opacity:.6;cursor:not-allowed}
-    .hint{font-size:12px;color:#666;margin:10px 0 0;line-height:1.5}
+    button:disabled{opacity:.6}
+
+    .hint{font-size:12px;color:#666;margin-top:8px;line-height:1.5}
+
     .grid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:14px}
     @media(min-width:720px){.grid{grid-template-columns:1fr 1fr}}
-    .item{background:#fff;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.06);padding:12px;display:flex;gap:10px}
-    .thumb{width:86px;min-width:86px;height:86px;border-radius:12px;background:#eee;overflow:hidden;display:flex;align-items:center;justify-content:center}
+
+    .item{
+      background:#fff;border-radius:16px;
+      box-shadow:0 8px 24px rgba(0,0,0,.06);
+      padding:12px;display:flex;gap:10px
+    }
+    .thumb{
+      width:90px;height:90px;min-width:90px;
+      border-radius:12px;background:#eee;
+      display:flex;align-items:center;justify-content:center;
+      overflow:hidden
+    }
     .thumb img{width:100%;height:100%;object-fit:cover}
+
     .meta{flex:1;min-width:0}
-    .title{font-weight:900;margin:0 0 6px;font-size:16px}
-    .kv{font-size:13px;color:#333;line-height:1.45}
-    .tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;align-items:center}
-    .tag{font-size:12px;background:#f1f3ff;border:1px solid #d7dcff;color:#2b3a9a;padding:4px 8px;border-radius:999px}
-    .row2{display:flex;gap:8px;align-items:center;margin-top:10px}
+    .title{font-weight:900;font-size:16px;margin-bottom:6px}
+    .kv{font-size:13px;line-height:1.5;color:#333}
+
+    .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+    .tag{
+      font-size:12px;background:#f1f3ff;
+      border:1px solid #d7dcff;color:#2b3a9a;
+      padding:4px 8px;border-radius:999px
+    }
+
+    .row2{display:flex;gap:8px;margin-top:10px}
     .row2 select{flex:1}
-    .row2 button{flex:.8}
-    .toast{margin-top:12px;font-size:13px;padding:10px 12px;border-radius:12px;display:none}
+    .row2 button{flex:.9}
+
+    .toast{
+      margin-top:12px;padding:10px 12px;border-radius:12px;
+      font-size:13px;display:none
+    }
     .ok{background:#ecfff1;border:1px solid #bfe9c8;color:#0c5a1a}
     .err{background:#fff1f1;border:1px solid #f1b8b8;color:#7a0b0b}
-    .small{font-size:12px;color:#666;margin-top:6px}
+
+    .small{font-size:12px;color:#666}
     a{color:#111}
   </style>
 </head>
 
 <body>
-  <div class="wrap">
-    <div class="card">
-      <h1>家庭物品查詢（Home Inventory）</h1>
+<div class="wrap">
 
-      <div class="bar">
-        <input id="q" placeholder="搜尋：名稱 / 備註 / 來源…" />
-        <select id="cat">
-          <option value="">全部分類</option>
-        </select>
-        <select id="status">
-          <option value="">全部狀態</option>
-          <option value="in_use">在用</option>
-          <option value="almost_used_up">快用完</option>
-          <option value="used_up">已用完 / 已吃完</option>
-          <option value="discarded">已丟棄</option>
-        </select>
-        <input id="location" placeholder="位置篩選：例如 O1 / A1…" />
-        <button id="btn">查詢</button>
-      </div>
+  <div class="card">
+    <h1>家庭物品查詢（Home Inventory）</h1>
 
-      <div class="hint">
-        會自動讀取你已新增過的分類，變成下拉選單。<br>
-        每筆資料也可以直接改狀態（不用重新新增）。
-      </div>
-
-      <div id="toast" class="toast"></div>
+    <div class="bar">
+      <input id="q" placeholder="搜尋：名稱 / 備註 / 來源…" />
+      <select id="cat">
+        <option value="">全部分類</option>
+      </select>
+      <select id="status">
+        <option value="">全部狀態</option>
+        <option value="in_use">在用</option>
+        <option value="almost_used_up">快用完</option>
+        <option value="used_up">已用完 / 已吃完</option>
+        <option value="discarded">已丟棄</option>
+      </select>
+      <input id="location" placeholder="位置篩選：例如 O1 / A1" />
+      <button id="btn">查詢</button>
     </div>
 
-    <div id="list" class="grid"></div>
+    <div class="hint">
+      分類會自動依你已新增的資料產生下拉選單。<br>
+      每筆物品可直接在此頁更新狀態，不用重新新增。
+    </div>
+
+    <div id="toast" class="toast"></div>
   </div>
 
+  <div id="list" class="grid"></div>
+</div>
+
 <script>
-  // 換成你自己的 Apps Script Web App URL（/exec）
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx6h6mH0qgGJ0OdTThjXb1M4cUPatDmg7BCVThntP7o2XX0-wEeuumrkOM8F1PHWLja4Q/exec";
+/* ================== 設定 ================== */
+const SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbx6h6mH0qgGJ0OdTThjXb1M4cUPatDmg7BCVThntP7o2XX0-wEeuumrkOM8F1PHWLja4Q/exec";
 
-  const elQ = document.getElementById("q");
-  const elCat = document.getElementById("cat");
-  const elStatus = document.getElementById("status");
-  const elLoc = document.getElementById("location");
-  const btn = document.getElementById("btn");
-  const list = document.getElementById("list");
-  const toast = document.getElementById("toast");
+/* ================== DOM ================== */
+const elQ = document.getElementById("q");
+const elCat = document.getElementById("cat");
+const elStatus = document.getElementById("status");
+const elLoc = document.getElementById("location");
+const btn = document.getElementById("btn");
+const list = document.getElementById("list");
+const toast = document.getElementById("toast");
 
-  function showToast(type, msg){
-    toast.className = "toast " + (type === "ok" ? "ok" : "err");
-    toast.textContent = msg;
-    toast.style.display = "block";
-    setTimeout(()=> toast.style.display="none", 3500);
+/* ================== 工具 ================== */
+function showToast(type, msg){
+  toast.className = "toast " + (type === "ok" ? "ok" : "err");
+  toast.textContent = msg;
+  toast.style.display = "block";
+  setTimeout(()=>toast.style.display="none",3500);
+}
+
+function esc(s){
+  return String(s ?? "").replace(/[&<>"']/g,m=>({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[m]));
+}
+
+function firstPhotoLink(photoLinks){
+  if(!photoLinks) return "";
+  return String(photoLinks).split("\n").map(s=>s.trim()).filter(Boolean)[0] || "";
+}
+
+/* ⭐ 關鍵：Drive 圖片轉成可顯示網址 */
+function driveImgSrc(url){
+  if(!url) return "";
+  const s = String(url);
+  const m = s.match(/\/d\/([^/]+)/) || s.match(/[?&]id=([^&]+)/);
+  if(!m) return s;
+  return `https://drive.google.com/uc?export=view&id=${m[1]}`;
+}
+
+/* ================== 載入分類 ================== */
+async function loadMeta(){
+  try{
+    const res = await fetch(`${SCRIPT_URL}?action=meta`);
+    const data = await res.json();
+    if(!data.ok) throw new Error(data.error);
+
+    const cats = data.meta?.categories || [];
+    elCat.innerHTML =
+      `<option value="">全部分類</option>` +
+      cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("");
+  }catch(e){
+    console.warn("meta load failed", e);
+  }
+}
+
+/* ================== 查詢 ================== */
+async function fetchList(){
+  btn.disabled = true;
+  btn.textContent = "查詢中…";
+  list.innerHTML = "";
+
+  try{
+    const params = new URLSearchParams({
+      action:"list",
+      q:elQ.value.trim(),
+      category:elCat.value,
+      status:elStatus.value,
+      location:elLoc.value.trim(),
+      limit:"300"
+    });
+
+    const res = await fetch(`${SCRIPT_URL}?${params.toString()}`);
+    const data = await res.json();
+    if(!data.ok) throw new Error(data.error);
+
+    renderItems(data.items || []);
+    showToast("ok", `找到 ${data.items.length} 筆`);
+  }catch(e){
+    showToast("err", "查詢失敗：" + e.message);
+  }finally{
+    btn.disabled = false;
+    btn.textContent = "查詢";
+  }
+}
+
+/* ================== 顯示結果 ================== */
+function renderItems(items){
+  if(!items.length){
+    list.innerHTML = `<div class="card"><b>沒有資料</b></div>`;
+    return;
   }
 
-  function firstPhotoLink(photoLinks){
-    if (!photoLinks) return "";
-    const parts = String(photoLinks).split("\n").map(s=>s.trim()).filter(Boolean);
-    return parts[0] || "";
-  }
-
-  function esc(s){
-    return String(s ?? "").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  }
-
-  async function loadMeta(){
-    try{
-      const res = await fetch(`${SCRIPT_URL}?action=meta`);
-      const data = await res.json();
-      if(!data.ok) throw new Error(data.error || "meta error");
-
-      const cats = data.meta?.categories || [];
-      elCat.innerHTML =
-        `<option value="">全部分類</option>` +
-        cats.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join("");
-    }catch(err){
-      console.warn("loadMeta failed:", err);
-    }
-  }
-
-  async function fetchList(){
-    btn.disabled = true;
-    btn.textContent = "查詢中…";
-    list.innerHTML = "";
-
-    try{
-      const params = new URLSearchParams({
-        action: "list",
-        q: elQ.value.trim(),
-        category: elCat.value,
-        status: elStatus.value,
-        location: elLoc.value.trim(),
-        limit: "300"
-      });
-
-      const res = await fetch(`${SCRIPT_URL}?${params.toString()}`);
-      const data = await res.json();
-
-      if (!data.ok) throw new Error(data.error || "API error");
-
-      renderItems(data.items || []);
-      showToast("ok", `找到 ${data.items.length} 筆`);
-    }catch(err){
-      showToast("err", "查詢失敗：" + (err?.message || String(err)));
-    }finally{
-      btn.disabled = false;
-      btn.textContent = "查詢";
-    }
-  }
-
-  function renderItems(items){
-    if (!items.length){
-      list.innerHTML = `<div class="card"><b>沒有資料</b><div class="small">試試看：清空篩選或換關鍵字。</div></div>`;
-      return;
-    }
-
-    list.innerHTML = items.map(it => {
-      const img = firstPhotoLink(it.photoLinks);
-
-      const chips = [
-        it.storage_location ? `位置：${esc(it.storage_location)}` : "",
-        it.category ? `分類：${esc(it.category)}` : "",
-        it.status ? `狀態：${esc(it.status)}` : ""
-      ].filter(Boolean);
-
-      return `
-        <div class="item" data-row="${it.row}">
-          <div class="thumb">
-            ${img ? `<img src="${esc(driveImgSrc(img))}" alt="photo">` : `<span class="small">無照片</span>`}
+  list.innerHTML = items.map(it=>{
+    const img = firstPhotoLink(it.photoLinks);
+    return `
+      <div class="item" data-row="${it.row}">
+        <div class="thumb">
+          ${img ? `<img src="${esc(driveImgSrc(img))}">` : `<span class="small">無照片</span>`}
+        </div>
+        <div class="meta">
+          <div class="title">${esc(it.item_name || "(未命名)")}</div>
+          <div class="kv">
+            ${it.purchase_date ? `購買：${esc(it.purchase_date)}<br>`:""}
+            ${it.source ? `來源：${esc(it.source)}<br>`:""}
+            ${it.notes ? `備註：${esc(it.notes)}`:""}
           </div>
-          <div class="meta">
-            <div class="title">${esc(it.item_name || "(未命名)")}</div>
-            <div class="kv">
-              ${it.purchase_date ? `購買：${esc(it.purchase_date)}<br>` : ""}
-              ${it.source ? `來源：${esc(it.source)}<br>` : ""}
-              ${it.price ? `價格：${esc(it.price)}<br>` : ""}
-              ${it.notes ? `備註：${esc(it.notes)}` : ""}
-            </div>
 
-            <div class="tags">
-              ${chips.map(t=>`<span class="tag">${t}</span>`).join("")}
-              ${img ? `<a class="small" href="${esc(img)}" target="_blank" rel="noopener">開啟照片</a>` : ""}
-            </div>
+          <div class="tags">
+            ${it.storage_location ? `<span class="tag">位置：${esc(it.storage_location)}</span>`:""}
+            ${it.category ? `<span class="tag">分類：${esc(it.category)}</span>`:""}
+            ${it.status ? `<span class="tag">狀態：${esc(it.status)}</span>`:""}
+            ${img ? `<a class="small" href="${esc(driveImgSrc(img))}" target="_blank">開啟照片</a>`:""}
+          </div>
 
-            <div class="row2">
-              <select class="st">
-                <option value="in_use" ${it.status==="in_use"?"selected":""}>在用</option>
-                <option value="almost_used_up" ${it.status==="almost_used_up"?"selected":""}>快用完</option>
-                <option value="used_up" ${it.status==="used_up"?"selected":""}>已用完 / 已吃完</option>
-                <option value="discarded" ${it.status==="discarded"?"selected":""}>已丟棄</option>
-              </select>
-              <button class="save">更新狀態</button>
-            </div>
+          <div class="row2">
+            <select class="st">
+              <option value="in_use" ${it.status==="in_use"?"selected":""}>在用</option>
+              <option value="almost_used_up" ${it.status==="almost_used_up"?"selected":""}>快用完</option>
+              <option value="used_up" ${it.status==="used_up"?"selected":""}>已用完</option>
+              <option value="discarded" ${it.status==="discarded"?"selected":""}>已丟棄</option>
+            </select>
+            <button class="save">更新狀態</button>
           </div>
         </div>
-      `;
-    }).join("");
+      </div>
+    `;
+  }).join("");
 
-    list.querySelectorAll(".item").forEach(card=>{
-      const row = card.getAttribute("data-row");
-      const sel = card.querySelector(".st");
-      const save = card.querySelector(".save");
+  list.querySelectorAll(".item").forEach(card=>{
+    const row = card.dataset.row;
+    const sel = card.querySelector(".st");
+    const btnSave = card.querySelector(".save");
 
-      save.addEventListener("click", async ()=>{
-        save.disabled = true;
-        save.textContent = "更新中…";
-        try{
-          const params = new URLSearchParams({
-            action: "updateStatus",
-            row: row,
-            status: sel.value
-          });
-          const res = await fetch(`${SCRIPT_URL}?${params.toString()}`);
-          const data = await res.json();
-          if (!data.ok) throw new Error(data.error || "update failed");
-          showToast("ok", `已更新：第 ${row} 列 → ${sel.value}`);
-        }catch(err){
-          showToast("err", "更新失敗：" + (err?.message || String(err)));
-        }finally{
-          save.disabled = false;
-          save.textContent = "更新狀態";
-        }
-      });
-    });
-  }
+    btnSave.onclick = async ()=>{
+      btnSave.disabled = true;
+      btnSave.textContent = "更新中…";
+      try{
+        const p = new URLSearchParams({
+          action:"updateStatus",
+          row:row,
+          status:sel.value
+        });
+        const r = await fetch(`${SCRIPT_URL}?${p.toString()}`);
+        const d = await r.json();
+        if(!d.ok) throw new Error(d.error);
+        showToast("ok","狀態已更新");
+      }catch(e){
+        showToast("err","更新失敗："+e.message);
+      }finally{
+        btnSave.disabled = false;
+        btnSave.textContent = "更新狀態";
+      }
+    };
+  });
+}
 
-  // Enter 直接查
-  elQ.addEventListener("keydown", (e)=>{ if(e.key==="Enter") fetchList(); });
-  btn.addEventListener("click", fetchList);
+/* ================== 初始化 ================== */
+btn.onclick = fetchList;
+elQ.addEventListener("keydown",e=>{ if(e.key==="Enter") fetchList(); });
 
-  // 初始化：先載入分類，再查詢一次
-  (async ()=>{
-    await loadMeta();
-    fetchList();
-  })();
+(async()=>{
+  await loadMeta();
+  fetchList();
+})();
 </script>
 </body>
 </html>
-
-
