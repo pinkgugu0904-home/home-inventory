@@ -161,7 +161,7 @@
       return `
         <div class="item" data-row="${it.row}">
           <div class="thumb">
-            ${img ? `<img src="${esc(img)}" alt="photo">` : `<span class="small">無照片</span>`}
+            ${img ? `<img src="${esc(driveImgSrc(img))}" alt="photo">` : `<span class="small">無照片</span>`}
           </div>
           <div class="meta">
             <div class="title">${esc(it.item_name || "(未命名)")}</div>
@@ -231,4 +231,5 @@
 </script>
 </body>
 </html>
+
 
